@@ -133,6 +133,7 @@ final class TouchBarController: NSObject, NSTouchBarDelegate {
     private func observedStateFingerprint() -> Int {
         var fingerprint = configuration?.instances().count ?? 0
         fingerprint &+= configuration?.currentPlayerName()?.hashValue ?? 0
+        fingerprint &+= configuration?.playerAvatarImage()?.hashValue ?? 0
         fingerprint &+= configuration?.currentInstanceID()?.hashValue ?? 0
 
         for instance in configuration?.instances() ?? [] {
