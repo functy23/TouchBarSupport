@@ -19,6 +19,16 @@ extension TouchBarController {
         label.stringValue = currentPlayer ?? ""
     }
 
+    /// Enables the export and show-in-finder buttons only when an instance is selected.
+    func updateGameActionItems(selectedGame: TouchBarInstance?) {
+        let enabled = selectedGame != nil
+        for key in [Identifier.exportModPack.rawValue, Identifier.showInFinder.rawValue] {
+            if let button = cachedItems[key] as? NSButtonTouchBarItem {
+                button.isEnabled = enabled
+            }
+        }
+    }
+
     func updatePlayStopItem(selectedGame: TouchBarInstance?, hasCurrentPlayer: Bool) {
         let item = mainItem(Identifier.playStop) {
             NSButtonTouchBarItem(
@@ -76,6 +86,26 @@ extension TouchBarController {
             )
             cachedItems[identifier.rawValue] = button
             return button
+        case Identifier.exportModPack:
+            let button = NSButtonTouchBarItem(
+                identifier: identifier,
+                title: configuration?.strings.exportModPack ?? "",
+                image: symbolImage("square.and.arrow.up"),
+                target: self,
+                action: #selector(exportModPackFromTouchBar),
+            )
+            cachedItems[identifier.rawValue] = button
+            return button
+        case Identifier.showInFinder:
+            let button = NSButtonTouchBarItem(
+                identifier: identifier,
+                title: configuration?.strings.showInFinder ?? "",
+                image: symbolImage("folder"),
+                target: self,
+                action: #selector(showInFinderFromTouchBar),
+            )
+            cachedItems[identifier.rawValue] = button
+            return button
         default:
             return nil
         }
@@ -120,5 +150,15 @@ extension TouchBarController {
     /// Opens the settings via the app-provided action.
     @objc func openInstanceSettingsFromTouchBar() {
         configuration?.onOpenSettings()
+    }
+
+    /// Requests a mod-pack export for the selected instance.
+    @objc func exportModPackFromTouchBar() {
+        configuration?.onExportModPack()
+    }
+
+    /// Reveals the selected instance's directory in Finder.
+    @objc func showInFinderFromTouchBar() {
+        configuration?.onShowInFinder()
     }
 }

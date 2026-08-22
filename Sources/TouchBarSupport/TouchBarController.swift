@@ -17,6 +17,8 @@ final class TouchBarController: NSObject, NSTouchBarDelegate {
         static let playStop = NSTouchBarItem.Identifier("\(prefix).play-stop")
         static let gamePicker = NSTouchBarItem.Identifier("\(prefix).game-picker")
         static let openSettings = NSTouchBarItem.Identifier("\(prefix).open-settings")
+        static let exportModPack = NSTouchBarItem.Identifier("\(prefix).export-modpack")
+        static let showInFinder = NSTouchBarItem.Identifier("\(prefix).show-in-finder")
 
         static let gamePrefix = "\(prefix).game."
 
@@ -86,6 +88,7 @@ final class TouchBarController: NSObject, NSTouchBarDelegate {
         } else {
             gamePickerIDs = []
         }
+        updateGameActionItems(selectedGame: selectedGame)
         updatePlayStopItem(selectedGame: selectedGame, hasCurrentPlayer: currentPlayer != nil)
     }
 
@@ -94,11 +97,13 @@ final class TouchBarController: NSObject, NSTouchBarDelegate {
         if hasPlayer {
             identifiers.append(Identifier.playerLabel)
         }
-        identifiers.append(Identifier.playStop)
+        identifiers.append(Identifier.openSettings)
         if hasInstance {
             identifiers.append(Identifier.gamePicker)
         }
-        identifiers.append(Identifier.openSettings)
+        identifiers.append(Identifier.exportModPack)
+        identifiers.append(Identifier.showInFinder)
+        identifiers.append(Identifier.playStop)
 
         touchBar.defaultItemIdentifiers = identifiers
         touchBar.principalItemIdentifier = nil

@@ -49,9 +49,13 @@ final class TouchBarSupportTests: XCTestCase {
             selectGame: "选择游戏",
             instanceSettings: "实例设置",
             play: "启动",
-            stop: "停止"
+            stop: "停止",
+            exportModPack: "导出整合包",
+            showInFinder: "打开目录"
         )
         XCTAssertEqual(strings.play, "启动")
         XCTAssertEqual(strings.stop, "停止")
+        XCTAssertEqual(strings.exportModPack, "导出整合包")
+        XCTAssertEqual(strings.showInFinder, "打开目录")
     }
 }

@@ -31,12 +31,25 @@ public struct TouchBarStrings: Sendable {
     public var play: String
     /// Title of the stop button.
     public var stop: String
+    /// Title of the export-mod-pack button.
+    public var exportModPack: String
+    /// Title of the show-in-finder button.
+    public var showInFinder: String
 
-    public init(selectGame: String, instanceSettings: String, play: String, stop: String) {
+    public init(
+        selectGame: String,
+        instanceSettings: String,
+        play: String,
+        stop: String,
+        exportModPack: String,
+        showInFinder: String
+    ) {
         self.selectGame = selectGame
         self.instanceSettings = instanceSettings
         self.play = play
         self.stop = stop
+        self.exportModPack = exportModPack
+        self.showInFinder = showInFinder
     }
 }
 
@@ -62,6 +75,10 @@ public struct TouchBarSupportConfiguration {
     public var onPlayStop: @MainActor () -> Void
     /// Called when the user taps the instance-settings button.
     public var onOpenSettings: @MainActor () -> Void
+    /// Called when the user taps the export-mod-pack button.
+    public var onExportModPack: @MainActor () -> Void
+    /// Called when the user taps the show-in-finder button.
+    public var onShowInFinder: @MainActor () -> Void
     /// Localized texts.
     public var strings: TouchBarStrings
 
@@ -74,6 +91,8 @@ public struct TouchBarSupportConfiguration {
         onSelectInstance: @escaping @MainActor (String) -> Void,
         onPlayStop: @escaping @MainActor () -> Void,
         onOpenSettings: @escaping @MainActor () -> Void,
+        onExportModPack: @escaping @MainActor () -> Void,
+        onShowInFinder: @escaping @MainActor () -> Void,
         strings: TouchBarStrings,
     ) {
         self.currentPlayerName = currentPlayerName
@@ -84,6 +103,8 @@ public struct TouchBarSupportConfiguration {
         self.onSelectInstance = onSelectInstance
         self.onPlayStop = onPlayStop
         self.onOpenSettings = onOpenSettings
+        self.onExportModPack = onExportModPack
+        self.onShowInFinder = onShowInFinder
         self.strings = strings
     }
 }
