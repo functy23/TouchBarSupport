@@ -62,8 +62,11 @@ public struct TouchBarStrings: Sendable {
 public struct TouchBarSupportConfiguration {
     /// The name of the currently active player, or nil when none is signed in.
     public var currentPlayerName: @MainActor () -> String?
-    /// The rendered 3D avatar of the current player, or nil when unavailable.
-    public var playerAvatarImage: @MainActor () -> NSImage?
+    /// The app's own avatar SwiftUI view for the current player, or nil.
+    ///
+    /// The view is hosted as-is so the Touch Bar renders exactly what the app
+    /// displays (same loading states, same 3D skin rendering).
+    public var playerAvatarView: @MainActor () -> AnyView?
     /// All available game instances.
     public var instances: @MainActor () -> [TouchBarInstance]
     /// The identifier of the currently selected instance, or nil.
@@ -89,7 +92,7 @@ public struct TouchBarSupportConfiguration {
 
     public init(
         currentPlayerName: @escaping @MainActor () -> String?,
-        playerAvatarImage: @escaping @MainActor () -> NSImage?,
+        playerAvatarView: @escaping @MainActor () -> AnyView?,
         instances: @escaping @MainActor () -> [TouchBarInstance],
         currentInstanceID: @escaping @MainActor () -> String?,
         isRunning: @escaping @MainActor (String) -> Bool,
@@ -103,7 +106,7 @@ public struct TouchBarSupportConfiguration {
         strings: TouchBarStrings,
     ) {
         self.currentPlayerName = currentPlayerName
-        self.playerAvatarImage = playerAvatarImage
+        self.playerAvatarView = playerAvatarView
         self.instances = instances
         self.currentInstanceID = currentInstanceID
         self.isRunning = isRunning

@@ -6,6 +6,7 @@
 //
 
 import AppKit
+import SwiftUI
 
 extension TouchBarController {
     func symbolImage(_ name: String, accessibilityDescription: String? = nil) -> NSImage {
@@ -17,11 +18,11 @@ extension TouchBarController {
         guard let item = cachedItems[Identifier.playerLabel.rawValue] as? NSCustomTouchBarItem,
               let container = item.view as? NSStackView,
               let label = container.arrangedSubviews.last as? NSTextField,
-              let avatar = container.arrangedSubviews.first as? NSImageView else { return }
+              let hosting = container.arrangedSubviews.first as? NSHostingView<AnyView> else { return }
 
         label.stringValue = currentPlayer ?? ""
-        if let image = configuration?.playerAvatarImage() {
-            avatar.image = image
+        if let avatarView = configuration?.playerAvatarView() {
+            hosting.rootView = avatarView
         }
     }
 
@@ -61,10 +62,9 @@ extension TouchBarController {
     func makeMainItem(for identifier: NSTouchBarItem.Identifier) -> NSTouchBarItem? {
         switch identifier {
         case Identifier.playerLabel:
-            let avatar = NSImageView()
-            avatar.image = configuration?.playerAvatarImage()
-            avatar.imageScaling = .scaleProportionallyDown
-            avatar.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+            let hosting = NSHostingView(rootView: configuration?.playerAvatarView() ?? AnyView(EmptyView()))
+            hosting.sizingOptions = [.intrinsicContentSize]
+            hosting.setContentHuggingPriority(.defaultHigh, for: .horizontal)
 
             let label = NSTextField(labelWithString: configuration?.currentPlayerName() ?? "")
             label.font = NSFont.systemFont(ofSize: 15, weight: .medium)
@@ -72,7 +72,7 @@ extension TouchBarController {
             label.alignment = .center
             label.lineBreakMode = .byTruncatingTail
 
-            let stack = NSStackView(views: [avatar, label])
+            let stack = NSStackView(views: [hosting, label])
             stack.orientation = .horizontal
             stack.spacing = 4
             stack.alignment = .centerY
