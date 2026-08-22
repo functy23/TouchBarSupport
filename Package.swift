@@ -17,9 +17,5 @@ let package = Package(
     ],
     targets: [
         .target(name: "TouchBarSupport"),
-        .testTarget(
-            name: "TouchBarSupportTests",
-            dependencies: ["TouchBarSupport"]
-        ),
     ],
 )

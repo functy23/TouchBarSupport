@@ -7,11 +7,12 @@ to macOS apps (macOS 14+). Originally extracted from
 ## Features
 
 - Current-player label (read-only, no player switching)
+- Selected-instance icon + label (read-only; the selection is made in the app)
 - Play/stop button
-- Instance picker: collapsed shows the current instance; expanding lists all
-  instances with equal-width auto-distributed buttons, tail-truncated titles,
-  and a check mark on the current selection; tapping one selects and collapses
 - Instance-settings button
+- Export-mod-pack button (hidden for instances that cannot export, e.g. vanilla)
+- Show-in-Finder button
+- Delete-instance button (the app owns the confirmation/deletion flow)
 
 The package owns zero application state: everything is injected through
 closures, so the Touch Bar stays in sync with any `Observation`-backed state
@@ -30,17 +31,17 @@ var body: some View {
 
 let configuration = TouchBarSupportConfiguration(
     currentPlayerName: { playerStore.currentPlayer?.name },
-    instances: { gameStore.games.map { TouchBarInstance(id: $0.id, name: $0.name) } },
-    currentInstanceID: { gameStore.selectedID },
-    isRunning: { gameID in gameStore.isRunning(gameID) },
-    isLaunching: { gameID in gameStore.isLaunching(gameID) },
-    onSelectInstance: { gameStore.select($0) },
-    onPlayStop: { gameStore.togglePlayStop() },
+    playerAvatarView: { playerStore.currentPlayer?.avatarView },
+    currentGameName: { playerStore.selectedGame?.name },
+    gameIconImage: { playerStore.selectedGame?.icon },
+    isRunning: { playerStore.isSelectedRunning },
+    isLaunching: { playerStore.isSelectedLaunching },
+    canExportModPack: { playerStore.selectedGame?.hasModLoader ?? false },
+    onPlayStop: { playerStore.togglePlayStop() },
     onOpenSettings: { openSettings() },
-    strings: TouchBarStrings(
-        selectGame: "Select a game",
-        instanceSettings: "Instance Settings"
-    )
+    onExportModPack: { exportSelectedModPack() },
+    onShowInFinder: { revealSelectedInFinder() },
+    onDeleteInstance: { confirmDeleteSelected() }
 )
 ```
 

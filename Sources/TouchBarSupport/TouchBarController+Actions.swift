@@ -8,6 +8,20 @@
 import AppKit
 import SwiftUI
 
+/// An image view that upscales its image with nearest-neighbor interpolation,
+/// so small (e.g. 16×16 pixel-art) game icons stay crisp when enlarged.
+final class TouchBarGameIconView: NSImageView {
+    override func draw(_ dirtyRect: NSRect) {
+        let context = NSGraphicsContext.current
+        let previousInterpolation = context?.imageInterpolation
+        context?.imageInterpolation = .none
+        super.draw(dirtyRect)
+        if let previousInterpolation {
+            context?.imageInterpolation = previousInterpolation
+        }
+    }
+}
+
 extension TouchBarController {
     func symbolImage(_ name: String, accessibilityDescription: String? = nil) -> NSImage {
         NSImage(systemSymbolName: name, accessibilityDescription: accessibilityDescription) ?? NSImage()
@@ -21,42 +35,36 @@ extension TouchBarController {
               let hosting = container.arrangedSubviews.first as? NSHostingView<AnyView> else { return }
 
         label.stringValue = currentPlayer ?? ""
+        let hasGame = configuration?.currentGameName() != nil
+        label.lineBreakMode = hasGame ? .byTruncatingTail : .byClipping
+        playerLabelWidthConstraint?.isActive = hasGame
         if let avatarView = configuration?.playerAvatarView() {
             hosting.rootView = avatarView
         }
     }
 
-    /// Enables the export and show-in-finder buttons only when an instance is selected.
-    func updateGameActionItems(selectedGame: TouchBarInstance?) {
-        let enabled = selectedGame != nil
-        for key in [
-            Identifier.showInFinder.rawValue,
-            Identifier.exportModPack.rawValue,
-            Identifier.deleteInstance.rawValue,
-        ] {
-            if let button = cachedItems[key] as? NSButtonTouchBarItem {
-                button.isEnabled = enabled
-            }
+    /// Keeps the read-only selected-instance label and its icon in sync with the selection.
+    func updateSelectedGameItem(currentGameName: String?) {
+        guard let item = cachedItems[Identifier.selectedGame.rawValue] as? NSCustomTouchBarItem,
+              let container = item.view as? NSStackView,
+              let imageView = container.arrangedSubviews.first as? NSImageView,
+              let label = container.arrangedSubviews.last as? NSTextField else { return }
+
+        label.stringValue = currentGameName ?? ""
+        label.toolTip = currentGameName
+        if currentGameName != lastRenderedGameName {
+            lastRenderedGameName = currentGameName
+            imageView.image = gameIconImageOrSymbol()
         }
     }
 
-    func updatePlayStopItem(selectedGame: TouchBarInstance?, hasCurrentPlayer: Bool) {
-        let item = mainItem(Identifier.playStop) {
-            NSButtonTouchBarItem(
-                identifier: Identifier.playStop,
-                title: "play.fill",
-                target: self,
-                action: #selector(toggleSelectedGame),
-            )
-        }
-        guard let button = item as? NSButtonTouchBarItem else { return }
+    func updatePlayStopItem(hasCurrentPlayer: Bool) {
+        let isRunning = configuration?.isRunning() ?? false
+        let isLaunching = configuration?.isLaunching() ?? false
 
-        let isRunning = selectedGame.map { configuration?.isRunning($0.id) ?? false } ?? false
-        let isLaunching = selectedGame.map { configuration?.isLaunching($0.id) ?? false } ?? false
-
-        button.title = ""
+        guard let button = itemOrMake(for: Identifier.playStop) as? NSButtonTouchBarItem else { return }
         button.image = symbolImage(isRunning ? "stop.fill" : "play.fill", accessibilityDescription: isRunning ? "Stop" : "Play")
-        button.isEnabled = selectedGame != nil && hasCurrentPlayer && !isLaunching
+        button.isEnabled = hasCurrentPlayer && !isLaunching
     }
 
     func makeMainItem(for identifier: NSTouchBarItem.Identifier) -> NSTouchBarItem? {
@@ -68,9 +76,13 @@ extension TouchBarController {
 
             let label = NSTextField(labelWithString: configuration?.currentPlayerName() ?? "")
             label.font = NSFont.systemFont(ofSize: 15, weight: .medium)
-            label.textColor = .secondaryLabelColor
             label.alignment = .center
             label.lineBreakMode = .byTruncatingTail
+            label.setContentHuggingPriority(.defaultLow, for: .horizontal)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            let widthConstraint = label.widthAnchor.constraint(lessThanOrEqualToConstant: 90)
+            widthConstraint.isActive = true
+            playerLabelWidthConstraint = widthConstraint
 
             let stack = NSStackView(views: [hosting, label])
             stack.orientation = .horizontal
@@ -79,79 +91,78 @@ extension TouchBarController {
 
             let item = NSCustomTouchBarItem(identifier: identifier)
             item.view = stack
-            cachedItems[identifier.rawValue] = item
             return item
         case Identifier.playStop:
             let button = NSButtonTouchBarItem(identifier: identifier, title: "", target: self, action: #selector(toggleSelectedGame))
             button.image = symbolImage("play.fill", accessibilityDescription: "Play")
-            cachedItems[identifier.rawValue] = button
             return button
-        case Identifier.gamePicker:
-            let picker = NSPopoverTouchBarItem(identifier: identifier)
-            picker.showsCloseButton = true
-            picker.collapsedRepresentationLabel = configuration?.strings.selectGame ?? ""
-            cachedItems[identifier.rawValue] = picker
-            return picker
+        case Identifier.selectedGame:
+            let imageView = TouchBarGameIconView()
+            imageView.image = gameIconImageOrSymbol()
+            imageView.imageScaling = .scaleProportionallyUpOrDown
+            imageView.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+            imageView.wantsLayer = true
+            imageView.layer?.cornerRadius = 6
+            imageView.layer?.masksToBounds = true
+            imageView.translatesAutoresizingMaskIntoConstraints = false
+            imageView.widthAnchor.constraint(equalToConstant: 28).isActive = true
+            imageView.heightAnchor.constraint(equalToConstant: 28).isActive = true
+
+            let label = NSTextField(labelWithString: configuration?.currentGameName() ?? "")
+            label.font = NSFont.systemFont(ofSize: 15, weight: .medium)
+            label.alignment = .center
+            label.lineBreakMode = .byTruncatingTail
+            label.setContentHuggingPriority(.defaultLow, for: .horizontal)
+            label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            label.widthAnchor.constraint(lessThanOrEqualToConstant: 100).isActive = true
+
+            let stack = NSStackView(views: [imageView, label])
+            stack.orientation = .horizontal
+            stack.spacing = 4
+            stack.alignment = .centerY
+
+            let item = NSCustomTouchBarItem(identifier: identifier)
+            item.view = stack
+            return item
         case Identifier.openSettings:
             let button = NSButtonTouchBarItem(identifier: identifier, title: "", target: self, action: #selector(openInstanceSettingsFromTouchBar))
             button.image = symbolImage("gearshape", accessibilityDescription: "Settings")
-            cachedItems[identifier.rawValue] = button
             return button
         case Identifier.exportModPack:
             let button = NSButtonTouchBarItem(identifier: identifier, title: "", target: self, action: #selector(exportModPackFromTouchBar))
             button.image = symbolImage("square.and.arrow.up", accessibilityDescription: "Export Mod Pack")
-            cachedItems[identifier.rawValue] = button
             return button
         case Identifier.showInFinder:
             let button = NSButtonTouchBarItem(identifier: identifier, title: "", target: self, action: #selector(showInFinderFromTouchBar))
             button.image = symbolImage("folder", accessibilityDescription: "Show in Finder")
-            cachedItems[identifier.rawValue] = button
             return button
         case Identifier.deleteInstance:
             let button = NSButtonTouchBarItem(identifier: identifier, title: "", target: self, action: #selector(deleteInstanceFromTouchBar))
             button.image = symbolImage("trash", accessibilityDescription: "Delete Instance")
             button.bezelColor = NSColor.systemRed
-            cachedItems[identifier.rawValue] = button
             return button
         default:
             return nil
         }
     }
 
-    func mainItem(_ identifier: NSTouchBarItem.Identifier, factory: () -> NSTouchBarItem) -> NSTouchBarItem {
-        if let item = cachedItems[identifier.rawValue] {
-            return item
+    /// The NSImage shown for the selected-instance icon: the app-provided game
+    /// icon image when available, otherwise the built-in game symbol.
+    func gameIconImageOrSymbol() -> NSImage {
+        if let image = configuration?.gameIconImage() {
+            return image
         }
-        let item = factory()
-        cachedItems[identifier.rawValue] = item
-        return item
-    }
-
-    func resolveSelectedGame(in instances: [TouchBarInstance]) -> TouchBarInstance? {
-        guard let selectedId = configuration?.currentInstanceID() else {
-            return nil
-        }
-        return instances.first { $0.id == selectedId }
+        return symbolImage("gamecontroller.fill", accessibilityDescription: configuration?.currentGameName())
     }
 
     @objc func toggleSelectedGame() {
         guard let configuration,
-              resolveSelectedGame(in: gamePickerInstances) != nil,
+              configuration.currentGameName() != nil,
               configuration.currentPlayerName() != nil else {
             return
         }
         configuration.onPlayStop()
-    }
-
-    @objc func selectGame(_ sender: NSButton) {
-        guard let rawIdentifier = sender.identifier?.rawValue,
-              let gameId = Identifier.id(afterPrefix: Identifier.gamePrefix, in: rawIdentifier) else {
-            return
-        }
-        TouchBarLog.log.debug("Touch Bar instance tapped: \(gameId)")
-        configuration?.onSelectInstance(gameId)
-        (cachedItems[Identifier.gamePicker.rawValue] as? NSPopoverTouchBarItem)?.dismissPopover(nil)
-        refresh()
     }
 
     /// Opens the settings via the app-provided action.
@@ -169,7 +180,7 @@ extension TouchBarController {
         configuration?.onShowInFinder()
     }
 
-    /// Requests deletion of the selected instance.
+    /// Requests deletion of the selected instance via the app-provided action.
     @objc func deleteInstanceFromTouchBar() {
         configuration?.onDeleteInstance()
     }

@@ -14,36 +14,24 @@ final class TouchBarController: NSObject, NSTouchBarDelegate {
     enum Identifier {
         static let prefix = "com.swiftcraftlauncher.touchbar"
         static let playerLabel = NSTouchBarItem.Identifier("\(prefix).player-label")
+        static let selectedGame = NSTouchBarItem.Identifier("\(prefix).selected-game")
         static let playStop = NSTouchBarItem.Identifier("\(prefix).play-stop")
-        static let gamePicker = NSTouchBarItem.Identifier("\(prefix).game-picker")
         static let openSettings = NSTouchBarItem.Identifier("\(prefix).open-settings")
         static let exportModPack = NSTouchBarItem.Identifier("\(prefix).export-modpack")
         static let showInFinder = NSTouchBarItem.Identifier("\(prefix).show-in-finder")
         static let deleteInstance = NSTouchBarItem.Identifier("\(prefix).delete-instance")
-
-        static let gamePrefix = "\(prefix).game."
-
-        static func game(_ id: String) -> NSTouchBarItem.Identifier {
-            NSTouchBarItem.Identifier("\(gamePrefix)\(id)")
-        }
-
-        static func id(afterPrefix prefix: String, in identifier: String) -> String? {
-            guard identifier.hasPrefix(prefix) else { return nil }
-            return String(identifier.dropFirst(prefix.count))
-        }
     }
 
     weak var window: NSWindow?
     let touchBar = NSTouchBar()
     var cachedItems: [String: NSTouchBarItem] = [:]
-    var gamePickerTouchBar: NSTouchBar?
-    var gamePickerItems: [String: NSTouchBarItem] = [:]
-    var gamePickerIDs: [String] = []
-    var gamePickerInstances: [TouchBarInstance] = []
     var configuration: TouchBarSupportConfiguration?
 
     private var isObservingState = false
     private var observationGeneration = 0
+    private var lastAppliedFingerprint: Int?
+    var lastRenderedGameName: String?
+    var playerLabelWidthConstraint: NSLayoutConstraint?
 
     func install(on window: NSWindow) {
         guard self.window !== window else { return }
@@ -54,61 +42,74 @@ final class TouchBarController: NSObject, NSTouchBarDelegate {
 
     func update(with configuration: TouchBarSupportConfiguration) {
         self.configuration = configuration
-        refresh()
+        refreshIfStateChanged()
         scheduleStateObservationIfNeeded()
+    }
+
+    /// Rebuilds the Touch Bar only when the underlying state actually changed.
+    ///
+    /// SwiftUI re-evaluates the hosting view frequently and re-creates the
+    /// configuration struct, and observable state is often re-written with the
+    /// same value (no-op writes still notify observers). Without this guard
+    /// every such event would rebuild the whole bar.
+    func refreshIfStateChanged() {
+        guard configuration != nil else { return }
+        let fingerprint = observedStateFingerprint()
+        guard fingerprint != lastAppliedFingerprint else { return }
+        lastAppliedFingerprint = fingerprint
+        refresh()
     }
 
     func touchBar(
         _ touchBar: NSTouchBar,
         makeItemForIdentifier identifier: NSTouchBarItem.Identifier,
     ) -> NSTouchBarItem? {
-        if touchBar === self.touchBar {
-            if let item = cachedItems[identifier.rawValue] {
-                return item
-            }
-            return makeMainItem(for: identifier)
+        itemOrMake(for: identifier)
+    }
+
+    /// Returns the cached item for `identifier`, creating and caching it on first use.
+    func itemOrMake(for identifier: NSTouchBarItem.Identifier) -> NSTouchBarItem? {
+        if let item = cachedItems[identifier.rawValue] {
+            return item
         }
-        if touchBar === gamePickerTouchBar {
-            return makeGamePickerItem(for: identifier)
-        }
-        return nil
+        guard let item = makeMainItem(for: identifier) else { return nil }
+        cachedItems[identifier.rawValue] = item
+        return item
     }
 
     func refresh() {
-        let instances = configuration?.instances() ?? []
+        let currentGameName = configuration?.currentGameName()
         let currentPlayer = configuration?.currentPlayerName()
-        let selectedGame = resolveSelectedGame(in: instances)
 
-        let idsSummary = instances.map(\.id).joined(separator: ",")
-        TouchBarLog.log.debug("Touch Bar refresh: \(instances.count) instances [\(idsSummary)], player=\(currentPlayer ?? "none"), selected=\(selectedGame?.name ?? "none")")
+        TouchBarLog.log.debug("Touch Bar refresh: player=\(currentPlayer ?? "none"), selected=\(currentGameName ?? "none")")
 
-        configureTouchBarLayout(hasPlayer: currentPlayer != nil, hasInstance: !instances.isEmpty)
+        configureTouchBarLayout(
+            hasPlayer: currentPlayer != nil,
+            hasGame: currentGameName != nil,
+            canExportModPack: configuration?.canExportModPack() ?? true,
+        )
         updatePlayerLabelItem(currentPlayer: currentPlayer)
-        if !instances.isEmpty {
-            updateGamePicker(instances: instances, selectedGame: selectedGame)
-        } else {
-            gamePickerIDs = []
-        }
-        updateGameActionItems(selectedGame: selectedGame)
-        updatePlayStopItem(selectedGame: selectedGame, hasCurrentPlayer: currentPlayer != nil)
+        updateSelectedGameItem(currentGameName: currentGameName)
+        updatePlayStopItem(hasCurrentPlayer: currentPlayer != nil)
     }
 
-    private func configureTouchBarLayout(hasPlayer: Bool, hasInstance: Bool) {
+    private func configureTouchBarLayout(hasPlayer: Bool, hasGame: Bool, canExportModPack: Bool) {
         var identifiers: [NSTouchBarItem.Identifier] = []
         if hasPlayer {
             identifiers.append(Identifier.playerLabel)
         }
-        if hasInstance {
-            identifiers.append(Identifier.gamePicker)
+        if hasGame {
+            identifiers.append(Identifier.selectedGame)
+            identifiers.append(Identifier.showInFinder)
+            if canExportModPack {
+                identifiers.append(Identifier.exportModPack)
+            }
+            identifiers.append(Identifier.playStop)
+            identifiers.append(Identifier.openSettings)
+            identifiers.append(Identifier.deleteInstance)
         }
-        identifiers.append(Identifier.showInFinder)
-        identifiers.append(Identifier.exportModPack)
-        identifiers.append(Identifier.playStop)
-        identifiers.append(Identifier.openSettings)
-        identifiers.append(Identifier.deleteInstance)
 
         touchBar.defaultItemIdentifiers = identifiers
-        touchBar.principalItemIdentifier = nil
     }
 
     private func scheduleStateObservationIfNeeded() {
@@ -124,21 +125,18 @@ final class TouchBarController: NSObject, NSTouchBarDelegate {
                 guard let self else { return }
                 isObservingState = false
                 guard generation == observationGeneration else { return }
-                refresh()
+                refreshIfStateChanged()
                 scheduleStateObservationIfNeeded()
             }
         }
     }
 
     private func observedStateFingerprint() -> Int {
-        var fingerprint = configuration?.instances().count ?? 0
+        var fingerprint = configuration?.currentGameName()?.hashValue ?? 0
         fingerprint &+= configuration?.currentPlayerName()?.hashValue ?? 0
-        fingerprint &+= configuration?.currentInstanceID()?.hashValue ?? 0
-
-        for instance in configuration?.instances() ?? [] {
-            fingerprint &+= (configuration?.isRunning(instance.id) ?? false) ? 1 : 0
-            fingerprint &+= (configuration?.isLaunching(instance.id) ?? false) ? 1 : 0
-        }
+        fingerprint &+= (configuration?.isRunning() ?? false) ? 1 : 0
+        fingerprint &+= (configuration?.isLaunching() ?? false) ? 1 : 0
+        fingerprint &+= (configuration?.canExportModPack() ?? true) ? 1 : 0
         return fingerprint
     }
 }
