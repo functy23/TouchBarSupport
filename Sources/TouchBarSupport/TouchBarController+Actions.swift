@@ -15,14 +15,24 @@ extension TouchBarController {
     /// Keeps the read-only current-player label in sync with the active player.
     func updatePlayerLabelItem(currentPlayer: String?) {
         guard let item = cachedItems[Identifier.playerLabel.rawValue] as? NSCustomTouchBarItem,
-              let label = item.view as? NSTextField else { return }
+              let container = item.view as? NSStackView,
+              let label = container.arrangedSubviews.last as? NSTextField,
+              let avatar = container.arrangedSubviews.first as? NSImageView else { return }
+
         label.stringValue = currentPlayer ?? ""
+        if let image = configuration?.playerAvatarImage() {
+            avatar.image = image
+        }
     }
 
     /// Enables the export and show-in-finder buttons only when an instance is selected.
     func updateGameActionItems(selectedGame: TouchBarInstance?) {
         let enabled = selectedGame != nil
-        for key in [Identifier.exportModPack.rawValue, Identifier.showInFinder.rawValue] {
+        for key in [
+            Identifier.showInFinder.rawValue,
+            Identifier.exportModPack.rawValue,
+            Identifier.deleteInstance.rawValue,
+        ] {
             if let button = cachedItems[key] as? NSButtonTouchBarItem {
                 button.isEnabled = enabled
             }
@@ -42,32 +52,38 @@ extension TouchBarController {
 
         let isRunning = selectedGame.map { configuration?.isRunning($0.id) ?? false } ?? false
         let isLaunching = selectedGame.map { configuration?.isLaunching($0.id) ?? false } ?? false
-        let title = isRunning ? (configuration?.strings.stop ?? "") : (configuration?.strings.play ?? "")
 
-        button.title = title
-        button.image = symbolImage(isRunning ? "stop.fill" : "play.fill", accessibilityDescription: title)
+        button.title = ""
+        button.image = symbolImage(isRunning ? "stop.fill" : "play.fill", accessibilityDescription: isRunning ? "Stop" : "Play")
         button.isEnabled = selectedGame != nil && hasCurrentPlayer && !isLaunching
     }
 
     func makeMainItem(for identifier: NSTouchBarItem.Identifier) -> NSTouchBarItem? {
         switch identifier {
         case Identifier.playerLabel:
+            let avatar = NSImageView()
+            avatar.image = configuration?.playerAvatarImage()
+            avatar.imageScaling = .scaleProportionallyDown
+            avatar.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+
             let label = NSTextField(labelWithString: configuration?.currentPlayerName() ?? "")
             label.font = NSFont.systemFont(ofSize: 15, weight: .medium)
             label.textColor = .secondaryLabelColor
             label.alignment = .center
             label.lineBreakMode = .byTruncatingTail
+
+            let stack = NSStackView(views: [avatar, label])
+            stack.orientation = .horizontal
+            stack.spacing = 4
+            stack.alignment = .centerY
+
             let item = NSCustomTouchBarItem(identifier: identifier)
-            item.view = label
+            item.view = stack
             cachedItems[identifier.rawValue] = item
             return item
         case Identifier.playStop:
-            let button = NSButtonTouchBarItem(
-                identifier: identifier,
-                title: configuration?.strings.play ?? "",
-                target: self,
-                action: #selector(toggleSelectedGame),
-            )
+            let button = NSButtonTouchBarItem(identifier: identifier, title: "", target: self, action: #selector(toggleSelectedGame))
+            button.image = symbolImage("play.fill", accessibilityDescription: "Play")
             cachedItems[identifier.rawValue] = button
             return button
         case Identifier.gamePicker:
@@ -77,33 +93,24 @@ extension TouchBarController {
             cachedItems[identifier.rawValue] = picker
             return picker
         case Identifier.openSettings:
-            let button = NSButtonTouchBarItem(
-                identifier: identifier,
-                title: configuration?.strings.instanceSettings ?? "",
-                image: symbolImage("gearshape"),
-                target: self,
-                action: #selector(openInstanceSettingsFromTouchBar),
-            )
+            let button = NSButtonTouchBarItem(identifier: identifier, title: "", target: self, action: #selector(openInstanceSettingsFromTouchBar))
+            button.image = symbolImage("gearshape", accessibilityDescription: "Settings")
             cachedItems[identifier.rawValue] = button
             return button
         case Identifier.exportModPack:
-            let button = NSButtonTouchBarItem(
-                identifier: identifier,
-                title: configuration?.strings.exportModPack ?? "",
-                image: symbolImage("square.and.arrow.up"),
-                target: self,
-                action: #selector(exportModPackFromTouchBar),
-            )
+            let button = NSButtonTouchBarItem(identifier: identifier, title: "", target: self, action: #selector(exportModPackFromTouchBar))
+            button.image = symbolImage("square.and.arrow.up", accessibilityDescription: "Export Mod Pack")
             cachedItems[identifier.rawValue] = button
             return button
         case Identifier.showInFinder:
-            let button = NSButtonTouchBarItem(
-                identifier: identifier,
-                title: configuration?.strings.showInFinder ?? "",
-                image: symbolImage("folder"),
-                target: self,
-                action: #selector(showInFinderFromTouchBar),
-            )
+            let button = NSButtonTouchBarItem(identifier: identifier, title: "", target: self, action: #selector(showInFinderFromTouchBar))
+            button.image = symbolImage("folder", accessibilityDescription: "Show in Finder")
+            cachedItems[identifier.rawValue] = button
+            return button
+        case Identifier.deleteInstance:
+            let button = NSButtonTouchBarItem(identifier: identifier, title: "", target: self, action: #selector(deleteInstanceFromTouchBar))
+            button.image = symbolImage("trash", accessibilityDescription: "Delete Instance")
+            button.bezelColor = NSColor.systemRed
             cachedItems[identifier.rawValue] = button
             return button
         default:
@@ -160,5 +167,10 @@ extension TouchBarController {
     /// Reveals the selected instance's directory in Finder.
     @objc func showInFinderFromTouchBar() {
         configuration?.onShowInFinder()
+    }
+
+    /// Requests deletion of the selected instance.
+    @objc func deleteInstanceFromTouchBar() {
+        configuration?.onDeleteInstance()
     }
 }

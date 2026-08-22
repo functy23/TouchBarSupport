@@ -19,6 +19,7 @@ final class TouchBarController: NSObject, NSTouchBarDelegate {
         static let openSettings = NSTouchBarItem.Identifier("\(prefix).open-settings")
         static let exportModPack = NSTouchBarItem.Identifier("\(prefix).export-modpack")
         static let showInFinder = NSTouchBarItem.Identifier("\(prefix).show-in-finder")
+        static let deleteInstance = NSTouchBarItem.Identifier("\(prefix).delete-instance")
 
         static let gamePrefix = "\(prefix).game."
 
@@ -97,13 +98,14 @@ final class TouchBarController: NSObject, NSTouchBarDelegate {
         if hasPlayer {
             identifiers.append(Identifier.playerLabel)
         }
-        identifiers.append(Identifier.openSettings)
         if hasInstance {
             identifiers.append(Identifier.gamePicker)
         }
-        identifiers.append(Identifier.exportModPack)
         identifiers.append(Identifier.showInFinder)
+        identifiers.append(Identifier.exportModPack)
         identifiers.append(Identifier.playStop)
+        identifiers.append(Identifier.openSettings)
+        identifiers.append(Identifier.deleteInstance)
 
         touchBar.defaultItemIdentifiers = identifiers
         touchBar.principalItemIdentifier = nil

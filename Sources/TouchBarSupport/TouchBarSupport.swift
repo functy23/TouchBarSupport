@@ -5,6 +5,7 @@
 //  © 2025-2026 Swift Craft Launcher Team. All rights reserved.
 //
 
+import AppKit
 import os
 import SwiftUI
 
@@ -61,6 +62,8 @@ public struct TouchBarStrings: Sendable {
 public struct TouchBarSupportConfiguration {
     /// The name of the currently active player, or nil when none is signed in.
     public var currentPlayerName: @MainActor () -> String?
+    /// The rendered 3D avatar of the current player, or nil when unavailable.
+    public var playerAvatarImage: @MainActor () -> NSImage?
     /// All available game instances.
     public var instances: @MainActor () -> [TouchBarInstance]
     /// The identifier of the currently selected instance, or nil.
@@ -79,11 +82,14 @@ public struct TouchBarSupportConfiguration {
     public var onExportModPack: @MainActor () -> Void
     /// Called when the user taps the show-in-finder button.
     public var onShowInFinder: @MainActor () -> Void
+    /// Called when the user taps the delete-instance button.
+    public var onDeleteInstance: @MainActor () -> Void
     /// Localized texts.
     public var strings: TouchBarStrings
 
     public init(
         currentPlayerName: @escaping @MainActor () -> String?,
+        playerAvatarImage: @escaping @MainActor () -> NSImage?,
         instances: @escaping @MainActor () -> [TouchBarInstance],
         currentInstanceID: @escaping @MainActor () -> String?,
         isRunning: @escaping @MainActor (String) -> Bool,
@@ -93,9 +99,11 @@ public struct TouchBarSupportConfiguration {
         onOpenSettings: @escaping @MainActor () -> Void,
         onExportModPack: @escaping @MainActor () -> Void,
         onShowInFinder: @escaping @MainActor () -> Void,
+        onDeleteInstance: @escaping @MainActor () -> Void,
         strings: TouchBarStrings,
     ) {
         self.currentPlayerName = currentPlayerName
+        self.playerAvatarImage = playerAvatarImage
         self.instances = instances
         self.currentInstanceID = currentInstanceID
         self.isRunning = isRunning
@@ -105,6 +113,7 @@ public struct TouchBarSupportConfiguration {
         self.onOpenSettings = onOpenSettings
         self.onExportModPack = onExportModPack
         self.onShowInFinder = onShowInFinder
+        self.onDeleteInstance = onDeleteInstance
         self.strings = strings
     }
 }
