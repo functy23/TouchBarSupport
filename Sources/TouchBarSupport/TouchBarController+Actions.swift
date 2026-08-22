@@ -32,7 +32,7 @@ extension TouchBarController {
 
         let isRunning = selectedGame.map { configuration?.isRunning($0.id) ?? false } ?? false
         let isLaunching = selectedGame.map { configuration?.isLaunching($0.id) ?? false } ?? false
-        let title = isRunning ? "stop.fill" : "play.fill"
+        let title = isRunning ? (configuration?.strings.stop ?? "") : (configuration?.strings.play ?? "")
 
         button.title = title
         button.image = symbolImage(isRunning ? "stop.fill" : "play.fill", accessibilityDescription: title)
@@ -54,7 +54,7 @@ extension TouchBarController {
         case Identifier.playStop:
             let button = NSButtonTouchBarItem(
                 identifier: identifier,
-                title: "play.fill",
+                title: configuration?.strings.play ?? "",
                 target: self,
                 action: #selector(toggleSelectedGame),
             )

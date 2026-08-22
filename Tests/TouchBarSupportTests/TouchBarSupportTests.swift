@@ -44,9 +44,14 @@ final class TouchBarSupportTests: XCTestCase {
         XCTAssertEqual(a.name, "A")
     }
 
-    func testDefaultStringsAreDistinct() {
-        let strings = TouchBarStrings(selectGame: "选择游戏", instanceSettings: "实例设置")
-        XCTAssertEqual(strings.selectGame, "选择游戏")
-        XCTAssertEqual(strings.instanceSettings, "实例设置")
+    func testDefaultStringsCarryPlayStopTitles() {
+        let strings = TouchBarStrings(
+            selectGame: "选择游戏",
+            instanceSettings: "实例设置",
+            play: "启动",
+            stop: "停止"
+        )
+        XCTAssertEqual(strings.play, "启动")
+        XCTAssertEqual(strings.stop, "停止")
     }
 }

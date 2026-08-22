@@ -1,0 +1,4 @@
+module TouchBarSupport {
+header "TouchBarSupport-Swift.h"
+export *
+}

@@ -1,0 +1,59 @@
+{
+  "" : {
+    "diagnostics" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarSupport-primary.dia",
+    "emit-module-dependencies" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarSupport-primary-emit-module.d",
+    "emit-module-diagnostics" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarSupport-primary-emit-module.dia",
+    "pch" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarSupport-primary-Bridging-header.pch",
+    "swift-dependencies" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarSupport-primary.swiftdeps"
+  },
+  "/private/tmp/TouchBarSupport-repo/Sources/TouchBarSupport/TouchBarController+Actions.swift" : {
+    "const-values" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarController+Actions.swiftconstvalues",
+    "dependencies" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarController+Actions.d",
+    "diagnostics" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarController+Actions.dia",
+    "index-unit-output-path" : "/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarController+Actions.o",
+    "llvm-bc" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarController+Actions.bc",
+    "object" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarController+Actions.o",
+    "swift-dependencies" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarController+Actions.swiftdeps",
+    "swiftmodule" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarController+Actions~partial.swiftmodule"
+  },
+  "/private/tmp/TouchBarSupport-repo/Sources/TouchBarSupport/TouchBarController+Pickers.swift" : {
+    "const-values" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarController+Pickers.swiftconstvalues",
+    "dependencies" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarController+Pickers.d",
+    "diagnostics" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarController+Pickers.dia",
+    "index-unit-output-path" : "/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarController+Pickers.o",
+    "llvm-bc" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarController+Pickers.bc",
+    "object" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarController+Pickers.o",
+    "swift-dependencies" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarController+Pickers.swiftdeps",
+    "swiftmodule" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarController+Pickers~partial.swiftmodule"
+  },
+  "/private/tmp/TouchBarSupport-repo/Sources/TouchBarSupport/TouchBarController.swift" : {
+    "const-values" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarController.swiftconstvalues",
+    "dependencies" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarController.d",
+    "diagnostics" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarController.dia",
+    "index-unit-output-path" : "/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarController.o",
+    "llvm-bc" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarController.bc",
+    "object" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarController.o",
+    "swift-dependencies" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarController.swiftdeps",
+    "swiftmodule" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarController~partial.swiftmodule"
+  },
+  "/private/tmp/TouchBarSupport-repo/Sources/TouchBarSupport/TouchBarInstaller.swift" : {
+    "const-values" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarInstaller.swiftconstvalues",
+    "dependencies" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarInstaller.d",
+    "diagnostics" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarInstaller.dia",
+    "index-unit-output-path" : "/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarInstaller.o",
+    "llvm-bc" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarInstaller.bc",
+    "object" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarInstaller.o",
+    "swift-dependencies" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarInstaller.swiftdeps",
+    "swiftmodule" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarInstaller~partial.swiftmodule"
+  },
+  "/private/tmp/TouchBarSupport-repo/Sources/TouchBarSupport/TouchBarSupport.swift" : {
+    "const-values" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarSupport.swiftconstvalues",
+    "dependencies" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarSupport.d",
+    "diagnostics" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarSupport.dia",
+    "index-unit-output-path" : "/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarSupport.o",
+    "llvm-bc" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarSupport.bc",
+    "object" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarSupport.o",
+    "swift-dependencies" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarSupport.swiftdeps",
+    "swiftmodule" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupport-t.build/Objects-normal/arm64/TouchBarSupport~partial.swiftmodule"
+  }
+}

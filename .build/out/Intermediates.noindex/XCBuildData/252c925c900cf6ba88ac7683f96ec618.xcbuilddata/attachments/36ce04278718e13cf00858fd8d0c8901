@@ -1,0 +1,29 @@
+{
+  "" : {
+    "diagnostics" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupportTests-p.build/Objects-normal/arm64/TouchBarSupportTests-primary.dia",
+    "emit-module-dependencies" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupportTests-p.build/Objects-normal/arm64/TouchBarSupportTests-primary-emit-module.d",
+    "emit-module-diagnostics" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupportTests-p.build/Objects-normal/arm64/TouchBarSupportTests-primary-emit-module.dia",
+    "pch" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupportTests-p.build/Objects-normal/arm64/TouchBarSupportTests-primary-Bridging-header.pch",
+    "swift-dependencies" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupportTests-p.build/Objects-normal/arm64/TouchBarSupportTests-primary.swiftdeps"
+  },
+  "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupportTests-p.build/DerivedSources/test_entry_point.swift" : {
+    "const-values" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupportTests-p.build/Objects-normal/arm64/test_entry_point.swiftconstvalues",
+    "dependencies" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupportTests-p.build/Objects-normal/arm64/test_entry_point.d",
+    "diagnostics" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupportTests-p.build/Objects-normal/arm64/test_entry_point.dia",
+    "index-unit-output-path" : "/TouchBarSupport.build/Debug/TouchBarSupportTests-p.build/Objects-normal/arm64/test_entry_point.o",
+    "llvm-bc" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupportTests-p.build/Objects-normal/arm64/test_entry_point.bc",
+    "object" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupportTests-p.build/Objects-normal/arm64/test_entry_point.o",
+    "swift-dependencies" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupportTests-p.build/Objects-normal/arm64/test_entry_point.swiftdeps",
+    "swiftmodule" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupportTests-p.build/Objects-normal/arm64/test_entry_point~partial.swiftmodule"
+  },
+  "/private/tmp/TouchBarSupport-repo/Tests/TouchBarSupportTests/TouchBarSupportTests.swift" : {
+    "const-values" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupportTests-p.build/Objects-normal/arm64/TouchBarSupportTests.swiftconstvalues",
+    "dependencies" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupportTests-p.build/Objects-normal/arm64/TouchBarSupportTests.d",
+    "diagnostics" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupportTests-p.build/Objects-normal/arm64/TouchBarSupportTests.dia",
+    "index-unit-output-path" : "/TouchBarSupport.build/Debug/TouchBarSupportTests-p.build/Objects-normal/arm64/TouchBarSupportTests.o",
+    "llvm-bc" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupportTests-p.build/Objects-normal/arm64/TouchBarSupportTests.bc",
+    "object" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupportTests-p.build/Objects-normal/arm64/TouchBarSupportTests.o",
+    "swift-dependencies" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupportTests-p.build/Objects-normal/arm64/TouchBarSupportTests.swiftdeps",
+    "swiftmodule" : "/private/tmp/TouchBarSupport-repo/.build/out/Intermediates.noindex/TouchBarSupport.build/Debug/TouchBarSupportTests-p.build/Objects-normal/arm64/TouchBarSupportTests~partial.swiftmodule"
+  }
+}

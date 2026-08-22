@@ -27,10 +27,16 @@ public struct TouchBarStrings: Sendable {
     public var selectGame: String
     /// Title of the instance-settings button.
     public var instanceSettings: String
+    /// Title of the play button.
+    public var play: String
+    /// Title of the stop button.
+    public var stop: String
 
-    public init(selectGame: String, instanceSettings: String) {
+    public init(selectGame: String, instanceSettings: String, play: String, stop: String) {
         self.selectGame = selectGame
         self.instanceSettings = instanceSettings
+        self.play = play
+        self.stop = stop
     }
 }
 

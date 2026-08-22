@@ -1,0 +1,11 @@
+Target dependency graph (4 targets)
+Target 'AllIncludingTests' in project 'Aggregate'
+➜ Explicit dependency on target 'TouchBarSupportTests-product' in project 'TouchBarSupport'
+➜ Dependency on target 'TouchBarSupportTests-product' in project 'TouchBarSupport' via transitive dependency through 'TouchBarSupportTests-test-runner'
+➜ Explicit dependency on target 'TouchBarSupport-product' in project 'TouchBarSupport'
+➜ Explicit dependency on target 'TouchBarSupport' in project 'TouchBarSupport'
+Target 'TouchBarSupport-product' in project 'TouchBarSupport'
+➜ Explicit dependency on target 'TouchBarSupport' in project 'TouchBarSupport'
+Target 'TouchBarSupportTests-product' in project 'TouchBarSupport'
+➜ Explicit dependency on target 'TouchBarSupport' in project 'TouchBarSupport'
+Target 'TouchBarSupport' in project 'TouchBarSupport' (no dependencies)
