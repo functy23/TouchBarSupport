@@ -9,51 +9,6 @@ import AppKit
 import os
 import SwiftUI
 
-/// A lightweight view of a game instance for the Touch Bar.
-public struct TouchBarInstance: Identifiable, Hashable, Sendable {
-    /// The unique identifier of the instance.
-    public let id: String
-    /// The display name of the instance.
-    public let name: String
-
-    public init(id: String, name: String) {
-        self.id = id
-        self.name = name
-    }
-}
-
-/// User-facing texts rendered by the Touch Bar.
-public struct TouchBarStrings: Sendable {
-    /// Placeholder shown when no instance is selected.
-    public var selectGame: String
-    /// Title of the instance-settings button.
-    public var instanceSettings: String
-    /// Title of the play button.
-    public var play: String
-    /// Title of the stop button.
-    public var stop: String
-    /// Title of the export-mod-pack button.
-    public var exportModPack: String
-    /// Title of the show-in-finder button.
-    public var showInFinder: String
-
-    public init(
-        selectGame: String,
-        instanceSettings: String,
-        play: String,
-        stop: String,
-        exportModPack: String,
-        showInFinder: String
-    ) {
-        self.selectGame = selectGame
-        self.instanceSettings = instanceSettings
-        self.play = play
-        self.stop = stop
-        self.exportModPack = exportModPack
-        self.showInFinder = showInFinder
-    }
-}
-
 /// The data sources and actions the app provides to the Touch Bar.
 ///
 /// All state is supplied through closures so the package never depends on
@@ -67,16 +22,20 @@ public struct TouchBarSupportConfiguration {
     /// The view is hosted as-is so the Touch Bar renders exactly what the app
     /// displays (same loading states, same 3D skin rendering).
     public var playerAvatarView: @MainActor () -> AnyView?
-    /// All available game instances.
-    public var instances: @MainActor () -> [TouchBarInstance]
-    /// The identifier of the currently selected instance, or nil.
-    public var currentInstanceID: @MainActor () -> String?
-    /// Whether the instance is currently running for the active player.
-    public var isRunning: @MainActor (String) -> Bool
-    /// Whether the instance is currently launching for the active player.
-    public var isLaunching: @MainActor (String) -> Bool
-    /// Called when the user picks an instance from the picker.
-    public var onSelectInstance: @MainActor (String) -> Void
+    /// The display name of the currently selected game instance, or nil.
+    public var currentGameName: @MainActor () -> String?
+    /// The app-provided icon image of the currently selected game instance, or nil.
+    ///
+    /// Return nil to fall back to the built-in game symbol.
+    public var gameIconImage: @MainActor () -> NSImage?
+    /// Whether the currently selected game instance is running for the active player.
+    public var isRunning: @MainActor () -> Bool
+    /// Whether the currently selected game instance is launching for the active player.
+    public var isLaunching: @MainActor () -> Bool
+    /// Whether the currently selected game instance can export a mod pack.
+    ///
+    /// Vanilla instances cannot be exported, so the export button is hidden.
+    public var canExportModPack: @MainActor () -> Bool
     /// Called when the user taps the play/stop button.
     public var onPlayStop: @MainActor () -> Void
     /// Called when the user taps the instance-settings button.
@@ -86,38 +45,37 @@ public struct TouchBarSupportConfiguration {
     /// Called when the user taps the show-in-finder button.
     public var onShowInFinder: @MainActor () -> Void
     /// Called when the user taps the delete-instance button.
+    ///
+    /// The app owns the actual deletion interaction; the Touch Bar only
+    /// forwards the tap.
     public var onDeleteInstance: @MainActor () -> Void
-    /// Localized texts.
-    public var strings: TouchBarStrings
 
     public init(
         currentPlayerName: @escaping @MainActor () -> String?,
         playerAvatarView: @escaping @MainActor () -> AnyView?,
-        instances: @escaping @MainActor () -> [TouchBarInstance],
-        currentInstanceID: @escaping @MainActor () -> String?,
-        isRunning: @escaping @MainActor (String) -> Bool,
-        isLaunching: @escaping @MainActor (String) -> Bool,
-        onSelectInstance: @escaping @MainActor (String) -> Void,
+        currentGameName: @escaping @MainActor () -> String?,
+        gameIconImage: @escaping @MainActor () -> NSImage?,
+        isRunning: @escaping @MainActor () -> Bool,
+        isLaunching: @escaping @MainActor () -> Bool,
+        canExportModPack: @escaping @MainActor () -> Bool,
         onPlayStop: @escaping @MainActor () -> Void,
         onOpenSettings: @escaping @MainActor () -> Void,
         onExportModPack: @escaping @MainActor () -> Void,
         onShowInFinder: @escaping @MainActor () -> Void,
         onDeleteInstance: @escaping @MainActor () -> Void,
-        strings: TouchBarStrings,
     ) {
         self.currentPlayerName = currentPlayerName
         self.playerAvatarView = playerAvatarView
-        self.instances = instances
-        self.currentInstanceID = currentInstanceID
+        self.currentGameName = currentGameName
+        self.gameIconImage = gameIconImage
         self.isRunning = isRunning
         self.isLaunching = isLaunching
-        self.onSelectInstance = onSelectInstance
+        self.canExportModPack = canExportModPack
         self.onPlayStop = onPlayStop
         self.onOpenSettings = onOpenSettings
         self.onExportModPack = onExportModPack
         self.onShowInFinder = onShowInFinder
         self.onDeleteInstance = onDeleteInstance
-        self.strings = strings
     }
 }
 

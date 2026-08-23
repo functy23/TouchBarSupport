@@ -20,19 +20,6 @@ final class TouchBarAttachmentView: NSView {
     }
 }
 
-/// A button with a fixed minimum width whose content hugging is low, so the
-/// Touch Bar distributes the remaining strip width evenly between all instance
-/// buttons instead of sizing each by its title.
-final class TouchBarInstanceButton: NSButton {
-    var minimumWidth: CGFloat = 52
-
-    override var intrinsicContentSize: NSSize {
-        var size = super.intrinsicContentSize
-        size.width = max(size.width, minimumWidth)
-        return size
-    }
-}
-
 /// Installs and keeps the launcher Touch Bar in sync with the app-provided configuration.
 struct TouchBarInstaller: NSViewRepresentable {
     let configuration: TouchBarSupportConfiguration
@@ -52,7 +39,7 @@ struct TouchBarInstaller: NSViewRepresentable {
     func updateNSView(_ nsView: NSView, context: Context) {
         context.coordinator.update(configuration: configuration)
         if let window = nsView.window {
-            context.coordinator.attach(to: window)
+            context.coordinator.controller.install(on: window)
         }
     }
 }
